@@ -1,0 +1,286 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+bank-system.exe -- emu8086 assembler version: 4.08  
+ 
+[ 10/23/2024  --  10:07:52 PM ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       data segment
+[   2]    0000: 50 72 65 73 73 20 61 6E 79 20 6B 65   pkey db "Press any key...$"
+                79 2E 2E 2E 24                      
+[   3]    0011: 0D 0A 43 68 6F 6F 73 65 20 61 6E 20   options db 13, 10, "Choose an Option: $"
+                4F 70 74 69 6F 6E 3A 20 24          
+[   4]    0026: 0D 0A 31 2D 43 72 65 61 74 65 20 61   account db 13, 10, "1-Create a New Account $"
+                20 4E 65 77 20 41 63 63 6F 75 6E 74 
+                20 24                               
+[   5]    0040: 0D 0A 32 2D 4C 6F 67 69 6E 20 24      login db 13, 10, "2-Login $"
+[   6]    004B: 0D 0A 33 2D 54 6F 74 61 6C 20 4D 6F   money db 13, 10, "3-Total Money $"
+                6E 65 79 20 24                      
+[   7]    005C: 0D 0A 34 2D 45 78 69 74 20 70 72 6F   exit db 13, 10, "4-Exit program $"
+                67 72 61 6D 20 24                   
+[   8]    006E: 0D 0A 4E 61 6D 65 3A 20 24            outputName db 13, 10, "Name: $"
+[   9]    0077: 0D 0A 53 75 72 6E 61 6D 65 3A 20 24   outputSurname db 13, 10, "Surname: $"
+                                                    
+[  10]    0083: 24 24 24 24 24 24 24 24 24 24 24 24   inputName db 20 dup('$')
+                24 24 24 24 24 24 24 24             
+[  11]    0097: 24 24 24 24 24 24 24 24 24 24 24 24   inputSurname db 20 dup('$')
+                24 24 24 24 24 24 24 24             
+[  12]    00AB: 24 24 24 24 24 24 24 24 24 24         inputBuffer db 10 dup('$')
+[  13]    00B5: 31 30 30 20 24                        dollar db "100 $"
+[  14]    00BA: 54 6F 74 61 6C 20 61 6D 6F 75 6E 74   totalMoney db "Total amount: $"
+                3A 20 24                            
+[  15]    00C9: 49 6E 76 61 6C 69 64 20 69 6E 70 75   error db "Invalid input. Please enter a valid number.$"
+                74 2E 20 50 6C 65 61 73 65 20 65 6E 
+                74 65 72 20 61 20 76 61 6C 69 64 20 
+                6E 75 6D 62 65 72 2E 24             
+[  16]    00F5: 45 6E 74 65 72 20 6C 6F 61 6E 20 61   loan_amount_prompt db "Enter loan amount: $"
+                6D 6F 75 6E 74 3A 20 24             
+[  17]    0109: 0D 0A 46 6F 72 20 59 65 73 20 2D 20   yesOption db 13, 10, "For Yes - Press Y key $"
+                50 72 65 73 73 20 59 20 6B 65 79 20 
+                24                                  
+[  18]    0122: 0D 0A 46 6F 72 20 4E 6F 20 2D 20 50   noOption db 13, 10, "For No - Press N key $"
+                72 65 73 73 20 4E 20 6B 65 79 20 24 
+                                                    
+[  19]    013A: 0D 0A 24                              emptySpace db 13, 10, '$'
+[  20]    013D: 00                                    loanAmount db ?
+[  21]        :                                       ends
+[  22]        :                                       
+[  23]        :                                       code segment
+[  24]        :                                       assume cs:code, ds:data
+[  25]        :                                       
+[  26]    0140:                                       clearScreen proc
+[  27]    0140: B4 00                                 mov ah, 00h
+[  28]    0142: B0 03                                 mov al, 03h
+[  29]    0144: CD 10                                 int 10h
+[  30]    0146: C3                                    ret
+[  31]        :                                       clearScreen endp
+[  32]        :                                       
+[  33]    0147:                                       getStringInput proc
+[  34]    0147: 50                                    push ax
+[  35]    0148: 52                                    push dx
+[  36]    0149: BA AB 00                              lea dx, inputBuffer
+[  37]    014C: B4 0A                                 mov ah, 0ah
+[  38]    014E: CD 21                                 int 21h
+[  39]    0150: 5A                                    pop dx
+[  40]    0151: 58                                    pop ax
+[  41]    0152: C3                                    ret
+[  42]        :                                       getStringInput endp
+[  43]        :                                       
+[  44]    0153:                                       displayAndInput proc
+[  45]    0153: 50                                    push ax
+[  46]    0154: 52                                    push dx
+[  47]    0155: B4 09                                 mov ah, 09h
+[  48]    0157: CD 21                                 int 21h
+[  49]    0159: B4 01                                 mov ah, 01h
+[  50]    015B: CD 21                                 int 21h
+[  51]    015D: 5A                                    pop dx
+[  52]    015E: 58                                    pop ax
+[  53]    015F: C3                                    ret
+[  54]        :                                       displayAndInput endp
+[  55]        :                                       
+[  56]    0160:                                       printString proc
+[  57]    0160: 52                                    push dx
+[  58]    0161: B4 09                                 mov ah, 09h
+[  59]    0163: CD 21                                 int 21h
+[  60]    0165: 5A                                    pop dx
+[  61]    0166: C3                                    ret
+[  62]        :                                       printString endp
+[  63]        :                                       
+[  64]    0167:                                       start:
+[  65]    0167: B8 00 00                              mov ax, @data
+[  66]    016A: 8E D8                                 mov ds, ax
+[  67]        :                                       
+[  68]    016C:                                       mainLoop:
+[  69]    016C: E8 D1 FF                              call clearScreen
+[  70]    016F: BA 11 00                              lea dx, options
+[  71]    0172: E8 EB FF                              call printString
+[  72]    0175: BA 26 00                              lea dx, account
+[  73]    0178: E8 E5 FF                              call printString
+[  74]    017B: BA 40 00                              lea dx, login
+[  75]    017E: E8 DF FF                              call printString
+[  76]    0181: BA 4B 00                              lea dx, money
+[  77]    0184: E8 D9 FF                              call printString
+[  78]    0187: BA 5C 00                              lea dx, exit
+[  79]    018A: E8 D3 FF                              call printString
+[  80]    018D: E8 C3 FF                              call displayAndInput
+[  81]    0190: 3C 31                                 cmp al, '1'
+[  82]    0192: 74 0E                                 je account_creation
+[  83]    0194: 3C 32                                 cmp al, '2'
+[  84]    0196: 74 3B                                 je login_process
+[  85]    0198: 3C 33                                 cmp al, '3'
+[  86]    019A: 74 69                                 je money_process
+[  87]    019C: 3C 34                                 cmp al, '4'
+[  88]    019E: 74 71                                 je exit_program
+[  89]    01A0: EB CA                                 jmp mainLoop
+[  90]        :                                       
+[  91]    01A2:                                       account_creation:
+[  92]    01A2: E8 9B FF                              call clearScreen
+[  93]    01A5: BA 6E 00                              lea dx, outputName
+[  94]    01A8: E8 B5 FF                              call printString
+[  95]    01AB: E8 99 FF                              call getStringInput
+[  96]        :                                       ; Save the input to inputName
+[  97]    01AE: BE AD 00                              lea si, inputBuffer + 2
+[  98]    01B1: BF 83 00                              lea di, inputName
+[  99]    01B4: B9 14 00                              mov cx, 20
+[ 100]    01B7:                                       copyName:
+[ 101]    01B7: AC                                    lodsb
+[ 102]    01B8: AA                                    stosb
+[ 103]    01B9: E2 FC                                 loop copyName
+[ 104]    01BB: BA 77 00                              lea dx, outputSurname
+[ 105]    01BE: E8 9F FF                              call printString
+[ 106]    01C1: E8 83 FF                              call getStringInput
+[ 107]        :                                       ; Save the input to inputSurname
+[ 108]    01C4: BE AD 00                              lea si, inputBuffer + 2
+[ 109]    01C7: BF 97 00                              lea di, inputSurname
+[ 110]    01CA: B9 14 00                              mov cx, 20
+[ 111]    01CD:                                       copySurname:
+[ 112]    01CD: AC                                    lodsb
+[ 113]    01CE: AA                                    stosb
+[ 114]    01CF: E2 FC                                 loop copySurname
+[ 115]    01D1: EB 99                                 jmp mainLoop
+[ 116]        :                                       
+[ 117]    01D3:                                       login_process:
+[ 118]    01D3: E8 6A FF                              call clearScreen
+[ 119]    01D6: BA 6E 00                              lea dx, outputName
+[ 120]    01D9: E8 84 FF                              call printString
+[ 121]    01DC: E8 68 FF                              call getStringInput
+[ 122]    01DF: BE AD 00                              lea si, inputBuffer + 2
+[ 123]    01E2: BF 83 00                              lea di, inputName
+[ 124]    01E5: B9 14 00                              mov cx, 20
+[ 125]    01E8:                                       checkName:
+[ 126]    01E8: AC                                    lodsb
+[ 127]    01E9: A6                                    cmpsb
+[ 128]    01EA: E2 FC                                 loop checkName
+[ 129]    01EC: BA 77 00                              lea dx, outputSurname
+[ 130]    01EF: E8 6E FF                              call printString
+[ 131]    01F2: E8 52 FF                              call getStringInput
+[ 132]    01F5: BE AD 00                              lea si, inputBuffer + 2
+[ 133]    01F8: BF 97 00                              lea di, inputSurname
+[ 134]    01FB: B9 14 00                              mov cx, 20
+[ 135]    01FE:                                       checkSurname:
+[ 136]    01FE: AC                                    lodsb
+[ 137]    01FF: A6                                    cmpsb
+[ 138]    0200: E2 FC                                 loop checkSurname
+[ 139]    0202: E9 67 FF                              jmp mainLoop
+[ 140]        :                                       
+[ 141]    0205:                                       money_process:
+[ 142]    0205: E8 38 FF                              call clearScreen
+[ 143]    0208: E8 0A 00                              call displayCurrentBalance
+[ 144]    020B: E8 14 00                              call getLoanDecision
+[ 145]    020E: E9 5B FF                              jmp mainLoop
+[ 146]        :                                       
+[ 147]    0211:                                       exit_program:
+[ 148]    0211: B4 4C                                 mov ah, 4ch
+[ 149]    0213: CD 21                                 int 21h
+[ 150]        :                                       
+[ 151]    0215:                                       displayCurrentBalance proc
+[ 152]    0215: BA BA 00                              lea dx, totalMoney
+[ 153]    0218: E8 45 FF                              call printString
+[ 154]    021B: BA B5 00                              lea dx, dollar
+[ 155]    021E: E8 3F FF                              call printString
+[ 156]    0221: C3                                    ret
+[ 157]        :                                       displayCurrentBalance endp
+[ 158]        :                                       
+[ 159]    0222:                                       getLoanDecision proc
+[ 160]    0222: 50                                    push ax
+[ 161]    0223: 52                                    push dx
+[ 162]    0224: E8 38 00                              call displayLoanPrompt
+[ 163]    0227: E8 29 FF                              call displayAndInput
+[ 164]    022A: 3C 79                                 cmp al, 'y'
+[ 165]    022C: 74 0E                                 je take_loan
+[ 166]    022E: 3C 59                                 cmp al, 'Y'
+[ 167]    0230: 74 0A                                 je take_loan
+[ 168]    0232: 3C 6E                                 cmp al, 'n'
+[ 169]    0234: 74 0D                                 je no_loan
+[ 170]    0236: 3C 4E                                 cmp al, 'N'
+[ 171]    0238: 74 09                                 je no_loan
+[ 172]    023A: EB E6                                 jmp getLoanDecision
+[ 173]        :                                       
+[ 174]    023C:                                       take_loan:
+[ 175]    023C: E8 07 00                              call getLoanAmount
+[ 176]    023F: FE 06 3D 01                           inc loanAmount
+[ 177]        :                                       
+[ 178]    0243:                                       no_loan:
+[ 179]    0243: 5A                                    pop dx
+[ 180]    0244: 58                                    pop ax
+[ 181]    0245: C3                                    ret
+[ 182]        :                                       getLoanDecision endp
+[ 183]        :                                       
+[ 184]    0246:                                       getLoanAmount proc
+[ 185]    0246: 50                                    push ax
+[ 186]    0247: 52                                    push dx
+[ 187]    0248: 53                                    push bx
+[ 188]    0249: E8 FB FE                              call getStringInput
+[ 189]    024C: B4 00                                 mov ah, 0
+[ 190]    024E: B0 00                                 mov al, 0
+[ 191]    0250: 8A 1E AD 00                           mov bl, [inputBuffer+2]
+[ 192]    0254: 80 EB 30                              sub bl, 48
+[ 193]    0257: 88 1E 3D 01                           mov loanAmount, bl
+[ 194]    025B: 5B                                    pop bx
+[ 195]    025C: 5A                                    pop dx
+[ 196]    025D: 58                                    pop ax
+[ 197]    025E: C3                                    ret
+[ 198]        :                                       getLoanAmount endp
+[ 199]        :                                       
+[ 200]    025F:                                       displayLoanPrompt proc
+[ 201]    025F: 50                                    push ax
+[ 202]    0260: 52                                    push dx
+[ 203]    0261: BA F5 00                              lea dx, loan_amount_prompt
+[ 204]    0264: E8 F9 FE                              call printString
+[ 205]    0267: 5A                                    pop dx
+[ 206]    0268: 58                                    pop ax
+[ 207]    0269: C3                                    ret
+[ 208]        :                                       displayLoanPrompt endp
+[ 209]        :                                       
+[ 210]        :                                       code ends
+[ 211]        :                                       end start
+[ 212]        :                                       
+[ 213]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: 6A      -   bytes on last page (l.byte)
+0003: 00      -   bytes on last page (h.byte)
+0004: 03      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 00      -   SP - stack pointer (h.byte)
+0012: 33      -   check sum (l.byte)
+0013: 28      -   check sum (h.byte)
+0014: 27      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 14      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 28      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 14      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================
