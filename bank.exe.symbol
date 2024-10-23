@@ -1,0 +1,49 @@
+< THE SYMBOL TABLE >  bank.exe  --  emu8086 assembler version: 4.08 
+===================================================================================================
+Name                     	Offset    	Size      	Type      	Segment   
+===================================================================================================
+DATA                     	00000     	-5        	SEGMENT   	(ITSELF)  
+PKEY                     	00000     	1         	VAR       	data      
+OPTIONS                  	00011     	1         	VAR       	data      
+ACCOUNT                  	00026     	1         	VAR       	data      
+LOGIN                    	00040     	1         	VAR       	data      
+MONEY                    	0004B     	1         	VAR       	data      
+EXIT                     	0005C     	1         	VAR       	data      
+OUTPUTNAME               	0006E     	1         	VAR       	data      
+OUTPUTSURNAME            	00077     	1         	VAR       	data      
+INPUTNAME                	00083     	1         	VAR       	data      
+INPUTSURNAME             	00097     	1         	VAR       	data      
+INPUTBUFFER              	000AB     	1         	VAR       	data      
+DOLLAR                   	000B5     	1         	VAR       	data      
+TOTALMONEY               	000BA     	1         	VAR       	data      
+ERROR                    	000C9     	1         	VAR       	data      
+LOAN_AMOUNT_PROMPT       	000F5     	1         	VAR       	data      
+YESOPTION                	00109     	1         	VAR       	data      
+NOOPTION                 	00122     	1         	VAR       	data      
+EMPTYSPACE               	0013A     	1         	VAR       	data      
+LOANAMOUNT               	0013D     	1         	VAR       	data      
+CODE                     	00014     	-5        	SEGMENT   	(ITSELF)  
+CLEARSCREEN              	00000     	-1        	NEAR      	code      
+GETSTRINGINPUT           	00007     	-1        	NEAR      	code      
+DISPLAYANDINPUT          	00013     	-1        	NEAR      	code      
+PRINTSTRING              	00020     	-1        	NEAR      	code      
+START                    	00027     	-1        	LABEL     	code      
+MAINLOOP                 	0002C     	-1        	LABEL     	code      
+ACCOUNT_CREATION         	00062     	-1        	LABEL     	code      
+COPYNAME                 	00077     	-1        	LABEL     	code      
+COPYSURNAME              	0008D     	-1        	LABEL     	code      
+LOGIN_PROCESS            	00093     	-1        	LABEL     	code      
+CHECKNAME                	000A8     	-1        	LABEL     	code      
+CHECKSURNAME             	000BE     	-1        	LABEL     	code      
+MONEY_PROCESS            	000C5     	-1        	LABEL     	code      
+EXIT_PROGRAM             	000D1     	-1        	LABEL     	code      
+DISPLAYCURRENTBALANCE    	000D5     	-1        	NEAR      	code      
+GETLOANDECISION          	000E2     	-1        	NEAR      	code      
+TAKE_LOAN                	000FC     	-1        	LABEL     	code      
+NO_LOAN                  	00103     	-1        	LABEL     	code      
+GETLOANAMOUNT            	00106     	-1        	NEAR      	code      
+DISPLAYLOANPROMPT        	0011F     	-1        	NEAR      	code      
+===================================================================================================
+[ 10/23/2024  --  10:02:05 PM ] 
+< END >
+ 
